@@ -1,0 +1,13 @@
+print(dType.GetPose(api))
+currentCoord = dType.GetPose(api)
+currentCoord[2] = currentCoord[2] + 50
+
+ptpMode = dType.PTPMode.PTPMOVLXYZMode
+x, y, z, rHead = currentCoord[0],currentCoord[1],currentCoord[2],currentCoord[3]
+dType.SetPTPCmd(api, ptpMode, x, y, z, rHead, isQueued=1)
+
+x, y, z, rHead = 200, 80, 50, 0
+dType.SetPTPCmd(api, ptpMode, x, y, z, rHead, isQueued=1)
+
+matrixPallet.setMatrixPallet(name)
+

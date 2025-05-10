@@ -1,0 +1,51 @@
+ptpMode = dType.PTPMode.PTPMOVLXYZMode
+
+countDroppedItemX = 0
+counterX = 0
+xStep = 40
+
+#define Y step & counter
+Ystep = 40
+counterY = 0
+
+pickingPoint = [300, -70, 50, 0]
+droppingPoint = [300, 100, 50, 0]
+
+# Start queue execution
+dType.SetQueuedCmdStartExec(api)
+
+while True:
+    # Move to picking point
+    x, y, z, rHead = pickingPoint
+    pickIndex = dType.SetPTPCmd(api, ptpMode, x, y, z, rHead, isQueued=1)[0]
+
+    # Move to dropping point
+    droppingPoint[0] = 300 + counterX
+    droppingPoint[1] = 100 + counterY
+    x, y, z, rHead = droppingPoint
+    dropIndex = dType.SetPTPCmd(api, ptpMode, x, y, z, rHead, isQueued=1)[0]
+
+    # Wait until the last queued command is executed
+    while True:
+        lastExecutedIndex = dType.GetQueuedCmdCurrentIndex(api)[0]
+        if lastExecutedIndex >= dropIndex:
+            break
+
+    countDroppedItemX += 1
+    counterX -= xStep
+    print(countDroppedItemX)
+
+    if countDroppedItemX >= 3:
+        print("Dropped 3 items.")
+        
+        #reset counter coords & counter items
+        countDroppedItemX = 0
+        counterX = 0
+
+        #increment y counter 
+        counterY += Ystep
+        print(counterY)
+
+        #reset pallet after 3 rows
+        if counterY >= Ystep * 3:
+            counterY = 0

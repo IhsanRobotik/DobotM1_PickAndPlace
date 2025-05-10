@@ -1,0 +1,86 @@
+ptpMode = dType.PTPMode.PTPMOVLXYZMode
+
+# Define Z, X, Y values
+pickingZ = 23
+droppingZ = 23
+
+countDroppedItemX = 0
+counterX = 0
+xStep = 40
+
+Ystep = 40
+counterY = 0
+
+ZStep = 3
+counterZ = 0
+maxZSteps = 20  # Set a limit for Z-levels (adjust as needed)
+
+pickingPoint = [300, -70, 90, 0]
+droppingPoint = [300, 100, 90, 0]
+droppingPointX = droppingPoint[0]
+droppingPointY = droppingPoint[1]
+droppingPointZ = droppingPoint[2]
+
+# Start queue execution
+dType.SetQueuedCmdStartExec(api)
+
+while True:
+    # Move to picking point
+    x, y, z, rHead = pickingPoint
+    pickIndex = dType.SetPTPCmd(api, ptpMode, x, y, z, rHead, isQueued=1)[0]
+
+    # Descend to picking Z
+    pickingPointDown = pickingPoint.copy()
+    pickingPointDown[2] = pickingZ
+    x, y, z, rHead = pickingPointDown
+    pickIndex = dType.SetPTPCmd(api, ptpMode, x, y, z, rHead, isQueued=1)[0]
+
+    # Set output 17 to ON (pick)
+    dType.SetIODO(api, 17, 0, isQueued=1)
+
+    # Ascend back to picking point safe Z
+    x, y, z, rHead = pickingPoint
+    pickIndex = dType.SetPTPCmd(api, ptpMode, x, y, z, rHead, isQueued=1)[0]
+
+    # Move to dropping point (safe Z)
+    droppingPoint[0] = droppingPointX + counterX
+    droppingPoint[1] = droppingPointY + counterY
+    droppingPoint[2] = droppingPointZ + counterZ
+    x, y, z, rHead = droppingPoint
+    dropIndex = dType.SetPTPCmd(api, ptpMode, x, y, z, rHead, isQueued=1)[0]
+
+    # Descend to dropping Z
+    droppingPointDown = droppingPoint.copy()
+    droppingPointDown[2] = droppingZ + counterZ
+    x, y, z, rHead = droppingPointDown
+    dropIndex = dType.SetPTPCmd(api, ptpMode, x, y, z, rHead, isQueued=1)[0]
+
+    # Set output 17 to OFF (release)
+    dType.SetIODO(api, 17, 1, isQueued=1)
+
+    # Ascend back to safe Z
+    x, y, z, rHead = droppingPoint
+    dropIndex = dType.SetPTPCmd(api, ptpMode, x, y, z, rHead, isQueued=1)[0]
+
+    # Wait for last command to finish
+    while True:
+        lastExecutedIndex = dType.GetQueuedCmdCurrentIndex(api)[0]
+        if lastExecutedIndex >= dropIndex:
+            break
+
+    countDroppedItemX += 1
+    counterX -= xStep
+
+    if countDroppedItemX >= 2:
+        print("Completed row of 3 items.")
+        countDroppedItemX = 0
+        counterX = 0
+        counterY += Ystep
+
+        if counterY >= Ystep * 2:
+            counterY = 0
+            counterZ += ZStep
+
+            if counterZ >= ZStep * maxZSteps:
+                print("Reached max Z height. Stopping.")
+                break  # Exit loop // handle reset
