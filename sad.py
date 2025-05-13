@@ -2,14 +2,14 @@ import socket
 ptpMode = dType.PTPMode.PTPMOVLXYZMode
 dType.SetQueuedCmdStartExec(api)
 
-pickingPointZ = 120
+pickingPointZ = 90
 pickingPointZDescend = 52
 pickingPointR = 0
 
 dropPointZ = 90
 dropPointZDescend = 20
-dropPointHeightStep = 8
-dropPointR = 90
+dropPointHeightStep = 10
+dropPointR = 0
 
 rx = 0
 ry = 0

@@ -13,8 +13,8 @@ server_socket.listen(1)
 print("Socket server started on 0.0.0.0:9238")
 
 # Accept a connection
-# client_socket, client_address = server_socket.accept()
-# print(f"Connection established with {client_address}")
+client_socket, client_address = server_socket.accept()
+print(f"Connection established with {client_address}")
 
 # variable declaration
 x_mm = 0
@@ -22,7 +22,7 @@ y_mm = 0
 r = 0
 
 # hardcoded values
-confidence = 0.95
+confidence = 0.92
 real_world_width_mm = 640
 image_width_pixels = 1920
 
@@ -36,7 +36,7 @@ real_y_ref_coordinate = 161.60
 # hardcoded formula
 conversion_factor = real_world_width_mm / image_width_pixels
 
-url = "http://192.168.1.12:8080/shot.jpg"
+url = "http://192.168.100.231:8080/shot.jpg"
 model = YOLO("best2.pt")
 device = 0 if torch.cuda.is_available() else 'cpu'
 cv2.namedWindow("YOLO Webcam Inference", cv2.WINDOW_NORMAL)
@@ -72,8 +72,6 @@ def calculate_rotation(box):
     # Convert rotation angle to degrees
     r = math.degrees(r)
 
-    print(r)
-
     # Calculate the endpoint of the line
     x_end = x + w * math.cos(math.radians(r))
     y_end = y + w * math.sin(math.radians(r))
@@ -105,21 +103,20 @@ while True:
                 x_mm, y_mm = convert_to_real_coordinates(x_center, y_center)
                 robot_x, robot_y = convert_to_robot_coordinates(x_mm, y_mm)
 
-                calculate_rotation(box) 
+                r = calculate_rotation(box) 
+                print(r)
 
-                print(f"Robot Coordinates: ({robot_x:.2f}, {robot_y:.2f}), {r:.2f} mm")
-
-    # try:
-    #     client_socket.settimeout(0.01) 
-    #     message = client_socket.recv(1024).decode()
-    #     if message == "ok":
-    #         client_socket.send(f"{float(robot_x), float(robot_y), float(angle)}".encode())
-    #         print(f"Sent coordinates: ({robot_x:.2f}, {robot_y:.2f}, {r:.2f})")
-    # except socket.timeout:
-    #     pass  
-    # except Exception as e:
-    #     print(f"Socket error: {e}")
-    #     break
+    try:
+        client_socket.settimeout(0.01) 
+        message = client_socket.recv(1024).decode()
+        if message == "ok":
+            client_socket.send(f"{float(robot_x), float(robot_y), float(r)}".encode())
+            print(f"Sent coordinates: ({robot_x:.2f}, {robot_y:.2f}, {r:.2f})")
+    except socket.timeout:
+        pass  
+    except Exception as e:
+        print(f"Socket error: {e}")
+        break
   
     annotated_frame = results[0].plot()
     cv2.imshow("YOLO Webcam Inference", annotated_frame)
