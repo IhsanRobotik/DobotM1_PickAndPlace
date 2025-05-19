@@ -36,8 +36,8 @@ real_y_ref_coordinate = 161.60
 # hardcoded formula
 conversion_factor = real_world_width_mm / image_width_pixels
 
-url = "http://192.168.100.231:8080/shot.jpg"
-model = YOLO("best2.pt")
+url = "http://192.168.100.204:8080/shot.jpg"
+model = YOLO("best.pt")
 device = 0 if torch.cuda.is_available() else 'cpu'
 cv2.namedWindow("YOLO Webcam Inference", cv2.WINDOW_NORMAL)
 
