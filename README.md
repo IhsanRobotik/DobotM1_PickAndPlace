@@ -13,7 +13,18 @@ A computer vision pipeline for Dobot M1, using YOLO for object detection and coo
 ---
 
 ## Installation
-It is recommended to use a Python virtual environment to manage dependencies.
+
+### 1. Clone the Repository
+
+```sh
+git clone https://github.com/IhsanRobotik/DobotM1_PickAndPlace.git
+cd DobotM1_PickAndPlace
+```
+
+### 2. Install Python Requirements
+
+This project was build with python 11, you might be able to use other version but its recomended to use the same version.
+Also it is recommended to use a Python virtual environment to manage dependencies.
 
 1. **Create a virtual environment:**
 
@@ -32,23 +43,6 @@ It is recommended to use a Python virtual environment to manage dependencies.
     ```sh
     pip install -r requirements.txt
     ```
-
-
-### 1. Clone the Repository
-
-```sh
-git clone https://github.com/yourusername/dobot-m1-vision.git
-cd dobot-m1-vision
-```
-
-### 2. Install Python Requirements
-
-Make sure you have Python 3.8+ installed.
-
-```sh
-pip install -r requirements.txt
-```
-
 ---
 
 ## Dobot M1 Studio Setup
