@@ -3,10 +3,7 @@
 A computer vision pipeline for Dobot M1, using YOLO for object detection and coordinate transformation for robotic pick and place tasks.
 
 ## Demo Video
-
-https://github.com/IhsanRobotik/DobotM1_PickAndPlace/assets/video.mp4
-
-You can watch a demonstration of the system in action in the video above.
+[![Demo Video](https://img.youtube.com/vi/qJpISdlPttE/0.jpg)](https://youtu.be/qJpISdlPttE)
 
 ---
 
