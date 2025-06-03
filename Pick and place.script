@@ -3,12 +3,12 @@ ptpMode = dType.PTPMode.PTPMOVLXYZMode
 dType.SetQueuedCmdStartExec(api)
 
 pickingPointZ = 120
-pickingPointZDescend = 52
+pickingPointZDescend = 55
 pickingPointR = 0
 
 dropPointZ = 90
-dropPointZDescend = 20
-dropPointHeightStep = 8
+dropPointZDescend = 84
+dropPointHeightStep = 0
 dropPointR = 90
 
 rx = 0
@@ -30,11 +30,11 @@ except:
 
 while True:
     # Move to dropping point
-    x, y, z, rHead = 71, 374, dropPointZ, dropPointR
+    x, y, z, rHead = 324, 60, dropPointZ, dropPointR
     dropIndex = dType.SetPTPCmd(api, ptpMode, x, y, z, rHead, isQueued=1)[0]
 
     # Move to dropping point descend
-    x, y, z, rHead = 71, 374, dropPointZDescend, dropPointR
+    x, y, z, rHead = 324, 60, dropPointZDescend, dropPointR
     dropIndex = dType.SetPTPCmd(api, ptpMode, x, y, z, rHead, isQueued=1)[0]	
 
     # Set output 17 to OFF (release)
@@ -42,7 +42,7 @@ while True:
     dType.dSleep(500)
 
     # Move to dropping point
-    x, y, z, rHead = 71, 374, dropPointZ, dropPointR
+    x, y, z, rHead = 324, 60, dropPointZ, dropPointR
     dropIndex = dType.SetPTPCmd(api, ptpMode, x, y, z, rHead, isQueued=1)[0]
 
     # Wait until the robot finishes moving to drop point

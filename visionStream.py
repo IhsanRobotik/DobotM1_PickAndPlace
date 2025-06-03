@@ -73,8 +73,7 @@ def calculate_rotation(box):
 cap = cv2.VideoCapture(video_url)
 
 while True:
-    frame = get_frame_from_stream(cap)
-    print (frame.shape)
+    frame = cv2.capture(1)
     if frame is None:
         print("Failed to grab frame")
         break
@@ -97,8 +96,8 @@ while True:
                 # Draw a vertical line at x= 500 across the frame
                 cv2.line(frame, (500, 0), (500, frame.shape[0]), (255, 0, 0), 2)
 
-                if x_center < 500:
-                    print(f"Rotation: {r}, X: {x_mm:.2f} mm, Y: {y_mm:.2f} mm")
+                # if x_center < 500:
+                print(f"Rotation: {r}, X: {x_mm:.2f} mm, Y: {y_mm:.2f} mm")
 
                 # print(f"Rotation: {r:.2f} degrees")
                 # robot_x, robot_y = convert_to_robot_coordinates(x_mm, y_mm)

@@ -2,6 +2,12 @@
 
 A computer vision pipeline for Dobot M1, using YOLO for object detection and coordinate transformation for robotic pick and place tasks.
 
+## Demo Video
+
+https://github.com/IhsanRobotik/DobotM1_PickAndPlace/assets/video.mp4
+
+You can watch a demonstration of the system in action in the video above.
+
 ---
 
 ## Features
@@ -165,7 +171,7 @@ Sebaiknya gunakan virtual environment untuk mengelola dependensi.
 Jalankan skrip utama Python:
 
 ```sh
-python main.py
+python mainWebcam.py
 ```
 
 Ini akan memulai sistem visi dan membuka socket server untuk komunikasi dengan Dobot M1 Studio.
