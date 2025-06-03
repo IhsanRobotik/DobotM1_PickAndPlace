@@ -48,7 +48,7 @@ Also it is recommended to use a Python virtual environment to manage dependencie
 ## Dobot M1 Studio Setup
 
 1. **Download and Install Dobot M1 Studio**  
-   - [Dobot M1 Studio Download Page](https://www.dobot.cc/downloadcenter/dobot-m1.html)
+   - [Dobot M1 Studio Download Page](https://www.dobot-robots.com/service/download-center)
    - Follow the official installation instructions for your operating system.
 
 2. **Connect Dobot M1 to your PC**  
