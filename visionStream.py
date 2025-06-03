@@ -2,17 +2,15 @@ import cv2
 from ultralytics import YOLO
 import torch
 import numpy as np
-import requests
 import math
 
-url = "http://192.168.100.201:8080/shot.jpg"
 model = YOLO("best3.pt")
 device = 0 if torch.cuda.is_available() else 'cpu'
 cv2.namedWindow("YOLO Webcam Inference", cv2.WINDOW_NORMAL)
-confidence = 0.8
+confidence = 0.92
 
-real_world_width_mm = 464
-image_width_pixels = 1920
+real_world_width_mm = 462
+image_width_pixels = 640
 
 # y+ robot = x- real world, x+ robot = y+ real world
 robot_x_ref_coordinate = -14
@@ -40,10 +38,13 @@ def convert_to_robot_coordinates(x_mm, y_mm):
 
     return robot_x, robot_y
 
-def get_frame_from_url(url):
-    img_resp = requests.get(url)
-    img_arr = np.array(bytearray(img_resp.content), dtype=np.uint8)
-    frame = cv2.imdecode(img_arr, -1)
+# Use the video stream URL (adjust if needed)
+video_url = "http://192.168.100.201:8080/video"
+
+def get_frame_from_stream(cap):
+    ret, frame = cap.read()
+    if not ret:
+        return None
     return frame
 
 def convert_to_real_coordinates(x_center, y_center):
@@ -68,8 +69,16 @@ def calculate_rotation(box):
     cv2.line(frame, (int(x), int(y)), (int(x_end), int(y_end)), (0, 255, 0), 2)
     return r
 
+# Initialize video capture
+cap = cv2.VideoCapture(video_url)
+
 while True:
-    frame = get_frame_from_url(url)
+    frame = get_frame_from_stream(cap)
+    print (frame.shape)
+    if frame is None:
+        print("Failed to grab frame")
+        break
+
     results = model.predict(frame, device=device, conf=confidence, verbose=False)
 
     for result in results:
@@ -83,8 +92,14 @@ while True:
 
                 x_mm, y_mm = convert_to_real_coordinates(x_center, y_center)
 
-                print(f"Class: {class_name}, X: {x_mm:.2f} mm, Y: {y_mm:.2f} mm")
                 r = calculate_rotation(box)
+
+                # Draw a vertical line at x= 500 across the frame
+                cv2.line(frame, (500, 0), (500, frame.shape[0]), (255, 0, 0), 2)
+
+                if x_center < 500:
+                    print(f"Rotation: {r}, X: {x_mm:.2f} mm, Y: {y_mm:.2f} mm")
+
                 # print(f"Rotation: {r:.2f} degrees")
                 # robot_x, robot_y = convert_to_robot_coordinates(x_mm, y_mm)
                 # print(f"Robot Coordinates: X: {robot_x:.2f}, Y: {robot_y:.2f}")
@@ -96,4 +111,5 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
+cap.release()
 cv2.destroyAllWindows()
