@@ -1,0 +1,48 @@
+import socket
+import time
+
+# declare variables
+receivedCoordinate = [0, 0]
+droppingPoint = [71, 374, 90, 20]
+safe_z = 90
+rHead = 20
+
+ptpMode = dType.PTPMode.PTPMOVLXYZMode
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+try:
+    sock.connect(('localhost', 9238))
+    socket_connected = True
+except:
+    print("Could not connect to socket. Continuing without server.")
+    socket_connected = False
+
+# Start queue execution
+dType.SetQueuedCmdStartExec(api)
+
+while True:
+    # go to drop point
+    x, y, z, r = droppingPoint
+    dType.SetPTPCmd(api, ptpMode, x, y, z, r)
+
+    if socket_connected:
+        try:
+            sock.send('ok'.encode())
+            print("sent ok")
+
+            data = sock.recv(1024)
+            print("Received:", data)
+
+            # decode and extract coordinates
+            coord_str = data.decode().strip().strip("b'").strip("()")
+            x_str, y_str = coord_str.split(',')
+            rx = float(x_str)
+            ry = float(y_str)
+
+            # move to received coordinate
+            dType.SetPTPCmd(api, ptpMode, rx, ry, safe_z, rHead)
+
+        except Exception as e:
+            socket_connected = False
+
+sock.close()

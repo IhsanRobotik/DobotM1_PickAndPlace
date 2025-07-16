@@ -1,0 +1,32 @@
+3.2.4 Zebra FS70 vision sensor setup
+Setup ini bertujuan untuk mengasses kebolehan fs70 dan membuat technical specification. Berikut Tahapan setup vision sensor zebra fs 70 
+1. Mounting sensor pada copy stand
+2. pemasangan kabel port
+3. setup new device di zebra aurora focus software
+4. adjustment strategi capture
+5. build job 
+6. connect
+7. deploy
+
+1. Sensor dimount pada copy stand yang memudahkan adjustment ketinggian kamera //talk more about the copy stand purpose here
+2. dalam setup adalah menghubungkan vision sensor ke pc, dalam setup yang penulis lakukan, digunakan usb-c, dengan kemudahan yang diberikan, port ini sangat berguna untuk setup cepat karena telah mendukung power dengan batasan 500ma dengan tegangan 5v. 
+3. setup new device, //talk about how you would setup new zebra fs70 new device use aurorafocus here
+4. adjust strategi capture, 
+	Ada beberapa strategi capture yang disediakan, disini penulis menggunakan self trigger dengan job mode continuos, self trigger membolehkan kamera mengambil frame tanpa input dari luar, dan pengambilan frame dilakukan dengan tempo yang bisa diatur pengguna, dengan pengaturan default yaitu kamera akan mengambil frame secepat yang diperbolehkan sistem, ini memudahkan penulis untuk mengambil frame dan mempelajari tools yang disediakan.
+ strategi capture sangat berpengaruh dalam pengambilan citra vision sensor, strategi harus disesuaikan dengan kebutuhan, pada beberapa vision sensor yang telah diterpkan infiniti 4.0 digunakan manual trigger oleh plc, seperti di YKK Zipper indonesia, konfeyor membawa kardus yang bergerak menuju barcode vision sensor, proximity sensor mendeteksi kedatangan kardus dan memberikan input ke plc untuk menghentikan konveyor dan mentrigger vision sensor untuk mengambil gambar. 
+5. build job
+Setelah master image didapatkan, penulis mengetes bebarapa tools yang disediakan 
+1. Barcode scan 
+Bebrapa parameter yang diatur dalam tool barcode scan ialah decode timeout, dimana berguna untuk mendeklarasikan berapa lama waktu yang diberikan untuk sensor mengolah frame sebelum timeout atau dinyakan pembacaan barcode timeout , ini berguna untuk //explain timout usage here. Selanjutnya adalah symbologies, mendeklarasikan symbology apasaja yang akan diupayakan sensor untuk di decode. Selanjutnya adalah manycode, yang membolehkan sensor untuk mendecode banyak barcode yang ada di frame 
+2. OCR (object character recognition)
+//explain minimum confidence, average character height (px) character spacing, character spacing, test color(but writer use any color here), contrast treshold, character width scale, and timeout.
+3. locate object
+Menggunakan model yang ditentukan olelh pengguna dan berguna untuk mencari model yang disebutkan di frame lain, misalnya mencari smd button pada board arduino seperti yang penulis lakukan dibawah ini 
+4 locate ege
+Find edge based contrast. In this example, locate edge is used to check whether a straight white PCB silkscreen is present or not
+Disini penulis mendemonstrasikan locate edge untuk menginspeksi keberadaan garis silkscreen pada sebuah pcb
+
+5 locate blob
+Detects a Blob (set of either light or dark-colored pixels that are connected to one another) that pass certain filter parameters within a region of interest.
+In this example  
+locate blob is used to detect scratch on a plastic part

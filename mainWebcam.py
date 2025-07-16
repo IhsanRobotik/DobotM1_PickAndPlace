@@ -84,7 +84,6 @@ def calculate_rotation(box):
     cv2.line(frame, (int(x), int(y)), (int(x_end), int(y_end)), (0, 255, 0), 2)
     return r
 
-
 while True:
     ret, frame = cam.read()
     if not ret or frame is None:

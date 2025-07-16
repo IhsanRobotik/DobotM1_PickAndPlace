@@ -23,22 +23,23 @@ r = 0
 
 # hardcoded values
 confidence = 0.92
-real_world_width_mm = 621
+real_world_width_mm = 698
 image_width_pixels = 1920
 
-# y+ robot = x- real world, x+ robot = y+ real world
-robot_x_ref_coordinate = 174.9
-robot_y_ref_coordinate = 26
-real_x_ref_coordinate = 299.44
-real_y_ref_coordinate = 150.20
+# hardcoded formula
+conversion_factor = real_world_width_mm / image_width_pixels
+robot_x_ref_coordinate = 161.45
+robot_y_ref_coordinate = 99.69
+real_x_ref_coordinate = 318.92
+real_y_ref_coordinate = 206.10
 
 # statif at 45cm
 
 # hardcoded formula
 conversion_factor = real_world_width_mm / image_width_pixels
 
-url = "http://192.168.100.204:8080/shot.jpg"
-model = YOLO("best.pt")
+url = "http://192.168.100.216:8080/shot.jpg"
+model = YOLO("best3.pt")
 device = 0 if torch.cuda.is_available() else 'cpu'
 cv2.namedWindow("YOLO Webcam Inference", cv2.WINDOW_NORMAL)
 
@@ -53,14 +54,14 @@ def convert_to_real_coordinates(x_center, y_center):
     y_mm = y_center * conversion_factor
     return x_mm, y_mm
 
+# x+ = y+, x+= y+
 def convert_to_robot_coordinates(x_mm, y_mm):
-    # Real world offsets relative to a known reference
-    delta_x = x_mm - real_x_ref_coordinate
-    delta_y = y_mm - real_y_ref_coordinate
+    # +y real = +x robot, +x real = +y robot
+    delta_x = y_mm - real_y_ref_coordinate
+    delta_y = x_mm - real_x_ref_coordinate
 
-    # Apply coordinate transformation based on direction mapping
-    robot_x = robot_x_ref_coordinate + delta_y  # x+ robot = y+ real
-    robot_y = robot_y_ref_coordinate - delta_x  # y+ robot = x- real
+    robot_x = robot_x_ref_coordinate + delta_x
+    robot_y = robot_y_ref_coordinate + delta_y
 
     return robot_x, robot_y
 
@@ -88,6 +89,7 @@ while True:
         message = client_socket.recv(1024).decode()
         if message == "ok":
             frame = get_frame_from_url(url)
+            print(frame.shape)
             results = model.predict(frame, device=device, conf=confidence, verbose=False)
             for result in results:
                 if result.obb is not None:
